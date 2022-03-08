@@ -1,29 +1,40 @@
 import * as React from "react";
 import { SimpleGrid, Box } from "@chakra-ui/react";
 import DebtAPI from "../services/api.service";
+import HeaderRow from "../components/header-row.component";
+import ContentRow from "../components/content-row.component";
+
+const columnNames = ['Nome', 'Dívida Total', 'Dívida de Papai', 'Minha Dívida', 'Limite Disponível']
+
+const formatToCurrency = (value) => {
+    return 'R$ ' + value.toFixed(2).replace('.', ',');
+}
 
 function HomePage({allDebts}) {
     return (
-        <>
-        <SimpleGrid columns={5} spacing={0}>
-                <Box  border='1px solid black'>Nome</Box>
-                <Box border='1px solid black'>Dívida Total</Box>
-                <Box  border='1px solid black'>Dívida de Papai</Box>
-                <Box border='1px solid black'>Minha Dívida</Box>
-                <Box  border='1px solid black'>Limite Disponível</Box>
+        <div style={{margin: '100px'}}>
+            <HeaderRow columns={columnNames.length} content={columnNames} />
+            <ContentRow columns={columnNames.length} content={allDebts.debtSourcesSummarized} />
 
-        {allDebts.debtSourcesSummarized.map(d => (
-            <>
-                <Box  border='1px solid black'>{d.name}</Box>
-                <Box border='1px solid black'>{d.totalDebt}</Box>
-                <Box  border='1px solid black'>{d.totalDebtExternal}</Box>
-                <Box  border='1px solid black'>{d.totalDebtInternal}</Box>
-                <Box border='1px solid black'>{d.availableLimit}</Box>
-            </>
-        ))}
-        </SimpleGrid>
+            <SimpleGrid columns={2}>
+                <Box border='1px solid black' fontWeight='bold'> TOTAL </Box>
+                <Box border='1px solid black'> {formatToCurrency(allDebts.summarizedDebts.totalDebt)} </Box>
 
-        </>
+            </SimpleGrid>
+
+            <SimpleGrid columns={2}>
+                <Box border='1px solid black' fontWeight='bold'> TOTAL Papai </Box>
+                <Box border='1px solid black'> {formatToCurrency(allDebts.summarizedDebts.totalDebtExternal)} </Box>
+
+            </SimpleGrid>
+
+            <SimpleGrid columns={2}>
+                <Box border='1px solid black' fontWeight='bold'> TOTAL Meu </Box>
+                <Box border='1px solid black'> {formatToCurrency(allDebts.summarizedDebts.totalDebtInternal)} </Box>
+
+            </SimpleGrid>
+
+        </div>
         
     )
   }
@@ -32,8 +43,6 @@ export default HomePage
 
 export async function getServerSideProps() {
     let allDebts = await DebtAPI.searchByCEP()
-
-    console.log(allDebts)
 
     return {
 		props: {
