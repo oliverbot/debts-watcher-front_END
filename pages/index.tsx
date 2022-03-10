@@ -3,10 +3,15 @@ import { SimpleGrid, Box } from "@chakra-ui/react";
 import DebtAPI from "../services/api.service";
 import HeaderRow from "../components/header-row.component";
 import ContentRow from "../components/content-row.component";
+import { allDebts } from "../types/debts";
+
+interface Props {
+    allDebts?: allDebts
+}
 
 const columnNames = ['Nome', 'Dívida Total', 'Dívida de Papai', 'Minha Dívida', 'Limite Disponível']
 
-const formatToCurrency = (value) => {
+const formatToCurrency = (value: Number) => {
     return 'R$ ' + value.toFixed(2).replace('.', ',');
 }
 
